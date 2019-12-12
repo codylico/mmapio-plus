@@ -37,12 +37,29 @@ namespace mmapio {
    * \brief File memory access modes.
    */
   enum mode {
+    /**
+     * \brief Open for reading only.
+     */
     mode_read = 0x72,
+    /**
+     * \brief Open for reading and writing.
+     */
     mode_write = 0x77,
+    /**
+     * \brief Map until end of file.
+     * \note When this parameter is active, the open functions
+     *   \link mmapio::open \endlink, \link mmaptwo::u8open \endlink and
+     *   \link mmapio::wopen \endlink will ignore the size parameter.
+     */
     mode_end = 0x65,
+    /**
+     * \brief Make a private mapping.
+     * \note Changes in pages remain private to the process.
+     */
     mode_private = 0x70,
 
     /**
+     * \brief Allow child processes to inherit this mapping.
      * \note If not using bequeath, the caller of
      *   \link mmapio::open \endlink, \link mmapio::u8open \endlink or
      *   \link mmapio::wopen \endlink must give time for the function
@@ -82,7 +99,7 @@ namespace mmapio {
     virtual size_t length(void) const = 0;
   };
 
-  /* BEGIN configurations */
+  //BEGIN configurations
   /**
    * \brief Check the library's target backend.
    * \return a \link mmapio::os \endlink value
@@ -99,9 +116,9 @@ namespace mmapio {
    */
   MMAPIO_PLUS_API
   bool check_bequeath_stop(void);
-  /* END   configurations */
+  //END   configurations
 
-  /* BEGIN open functions */
+  //BEGIN open functions
   /**
    * \brief Open a file using a narrow character name.
    * \param nm name of file to map
@@ -111,7 +128,10 @@ namespace mmapio {
    * \param sz size in bytes of region to map
    * \param off file offset of region to map
    * \param throwing whether to pass on exceptions to the caller
-   * \return an interface on success, NULL otherwise
+   * \throws `std::runtime_error`, `std::range_error`, `std::bad_alloc`,
+   *   `std::invalid_argument`, and `std::length_error`,
+   *   but only when `throwing` is set to `true`.
+   * \return an interface on success, `nullptr` otherwise
    * \note On Windows, this function uses `CreateFileA` directly.
    * \note On Unix, this function uses the `open` system call directly.
    */
@@ -129,7 +149,9 @@ namespace mmapio {
    * \param sz size in bytes of region to map
    * \param off file offset of region to map
    * \param throwing whether to pass on exceptions to the caller
-   * \return an interface on success, NULL otherwise
+   * \throws `std::runtime_error`, `std::range_error`, `std::bad_alloc`, and
+   *   `std::invalid_argument`, but only when `throwing` is set to `true`.
+   * \return an interface on success, `nullptr` otherwise
    * \note On Windows, this function re-encodes the `nm` parameter from
    *   UTF-8 to UTF-16, then uses `CreateFileW` on the result.
    * \note On Unix, this function uses the `open` system call directly.
@@ -148,7 +170,9 @@ namespace mmapio {
    * \param sz size in bytes of region to map
    * \param off file offset of region to map
    * \param throwing whether to pass on exceptions to the caller
-   * \return an interface on success, NULL otherwise
+   * \return an interface on success, `nullptr` otherwise
+   * \throws `std::runtime_error`, `std::range_error`, `std::bad_alloc`, and
+   *   `std::invalid_argument`, but only when `throwing` is set to `true`.
    * \note On Windows, this function uses `CreateFileW` directly.
    * \note On Unix, this function translates the wide string
    *   to a multibyte character string, then passes the result to
@@ -158,7 +182,7 @@ namespace mmapio {
   mmapio_i* wopen
     ( wchar_t const* nm, char const* mode, size_t sz, size_t off,
       bool throwing=true);
-  /* END   open functions */
+  //END   open functions
 };
 
 #endif /*hg_MMapIO_Plus_mmapIo_H_*/

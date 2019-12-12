@@ -10,16 +10,24 @@
 #include <stdexcept>
 
 namespace mmapio {
+  /**
+   * \brief Mode tag for mmapio interface, holding various
+   *   mapping configuration values.
+   */
   struct mode_tag {
+    /** \brief access mode (readonly, read-write) */
     char mode;
+    /** \brief map-to-end-of-file flag */
     char end;
+    /** \brief flag for activating private mapping */
     char privy;
+    /** \brief flag for enabling access from child processes */
     char bequeath;
   };
 
   /**
    * \brief Extract a mmapio mode tag from a mode text.
-   * \param mmode the value to parse
+   * \param mmode the text to parse
    * \return a mmapio mode tag
    */
   static struct mode_tag mode_parse(char const* mmode);
@@ -55,12 +63,19 @@ namespace mmapio {
 #  include <limits>
 
 namespace mmapio {
+  /**
+   * \brief POSIX implementation of mmapio interface.
+   */
   MMAPIO_PLUS_API
   class mmapio_unix : public mmapio_i {
   private:
+    /** \brief `mmap` pointer */
     unsigned char* ptr;
+    /** \brief length of mapped region */
     size_t len;
+    /** \brief offset from `ptr` to start of user-requested space */
     size_t shift;
+    /** \brief file descriptor */
     int fd;
 
   public:
@@ -70,35 +85,31 @@ namespace mmapio {
      * \param mmode mode text
      * \param sz size of range to map
      * \param off offset from start of file
-     * \return an interface on success, NULL otherwise
+     * \throw `std::runtime_error` and `std::length_error`
      */
     mmapio_unix
       (int fd, struct mode_tag const mmode, size_t sz, size_t off);
 
     /**
      * \brief Destructor; closes the file and frees the space.
-     * \param m map instance
      */
     ~mmapio_unix(void) override;
 
   public:
     /**
      * \brief Acquire a lock to the space.
-     * \param m map instance
      * \return pointer to locked space on success, NULL otherwise
      */
     void* acquire(void) override;
 
     /**
      * \brief Release a lock of the space.
-     * \param m map instance
      * \param p pointer of region to release
      */
     void release(void* p) override;
 
     /**
      * \brief Check the length of the mapped area.
-     * \param m map instance
      * \return the length of the mapped region exposed by this interface
      */
     size_t length(void) const override;
@@ -112,21 +123,21 @@ namespace mmapio {
   static char* wctomb(wchar_t const* nm);
 
   /**
-   * \brief Convert a mmapio mode text to a POSIX `open` flag.
-   * \param mmode the value to convert
+   * \brief Convert a mmapio mode character to a POSIX `open` flag.
+   * \param mmode the character to convert
    * \return an `open` flag on success, zero otherwise
    */
   static int mode_rw_cvt(int mmode);
 
   /**
-   * \brief Convert a mmapio mode text to a POSIX `mmap` protection flag.
-   * \param mmode the value to convert
+   * \brief Convert a mmapio mode character to a POSIX `mmap` protection flag.
+   * \param mmode the character to convert
    * \return an `mmap` protection flag on success, zero otherwise
    */
   static int mode_prot_cvt(int mmode);
 
   /**
-   * \brief Convert a mmapio mode text to a POSIX `mmap` others' flag.
+   * \brief Convert a mmapio mode character to a POSIX `mmap` others' flag.
    * \param mprivy the private flag to convert
    * \return an `mmap` others' flag on success, zero otherwise
    */
@@ -147,13 +158,21 @@ namespace mmapio {
 #  include <cerrno>
 
 namespace mmapio {
+  /**
+   * \brief Structure for Win32 API mmapio implementation.
+   */
   MMAPIO_PLUS_API
   class mmapio_win32 : public mmapio_i {
   private:
+    /** \brief `MapViewOfFile` pointer */
     unsigned char* ptr;
+    /** \brief length of space */
     size_t len;
+    /** \brief offset from `ptr` to start of user-requested space */
     size_t shift;
+    /** \brief file mapping handle */
     HANDLE fmd;
+    /** \brief file handle */
     HANDLE fd;
 
   public:
@@ -163,7 +182,8 @@ namespace mmapio {
      * \param mmode mode text
      * \param sz size of range to map
      * \param off offset from start of file
-     * \return an interface on success, NULL otherwise
+     * \throws `std::invalid_argument`, `std::range_error`,
+     *   and `std::runtime_error`
      */
     mmapio_win32
       (HANDLE fd, struct mode_tag const mmode, size_t sz, size_t off);
@@ -194,17 +214,18 @@ namespace mmapio {
   };
 
   /**
-   * \brief Convert a mmapio mode text to a `CreateFile.` desired access flag.
-   * \param mmode the value to convert
-   * \return an `CreateFile.` desired access flag on success, zero otherwise
+   * \brief Convert a mmapio mode character to a `CreateFile.`
+   *   desired access flag.
+   * \param mmode the character to convert
+   * \return a `CreateFile.` desired access flag on success, zero otherwise
    */
   static DWORD mode_rw_cvt(int mmode);
 
   /**
    * \brief Convert UTF-8 encoded text to UTF-16 LE text.
    * \param nm file name encoded in UTF-8
-   * \param out output string
-   * \param outlen output length
+   * \param[out] out output string
+   * \param[out] outlen output length
    * \return an errno code
    */
   static int u8towc_shim
@@ -225,17 +246,17 @@ namespace mmapio {
   static size_t file_size_e(HANDLE fd);
 
   /**
-   * \brief Convert a mmapio mode text to a
+   * \brief Convert a mmapio mode character to a
    *   `CreateFileMapping.` protection flag.
-   * \param mmode the value to convert
+   * \param mmode the character to convert
    * \return a `CreateFileMapping.` protection flag on success, zero otherwise
    */
   static DWORD mode_prot_cvt(int mmode);
 
   /**
-   * \brief Convert a mmapio mode text to a `MapViewOfFile`
+   * \brief Convert a mmapio mode character to a `MapViewOfFile`
    *   desired access flag.
-   * \param mmode the value to convert
+   * \param mmode the character to convert
    * \return a `MapViewOfFile` desired access flag on success, zero otherwise
    */
   static DWORD mode_access_cvt(struct mode_tag const mt);
@@ -425,7 +446,7 @@ namespace mmapio {
         n += 2;
         p += 3;
       } else {
-        return EILSEQ; /* since beyond U+1FFFFF, no valid UTF-16 encoding */
+        return EILSEQ; /* since beyond U+10FFFF, no valid UTF-16 encoding */
       }
     }
     (*outlen) = n;
@@ -604,13 +625,15 @@ namespace mmapio {
         /* reject non-ending zero parameter */
         CloseHandle(fd);
         throw std::invalid_argument
-          ("mmapio_win32::mmapio_win32: offset too far from start of file");
+          ( "mmapio::mmapio_win32::mmapio_win32: "
+            "offset too far from start of file");
       } else sz = xsz-off;
     } else if (sz == 0) {
       /* reject non-ending zero parameter */
       CloseHandle(fd);
       throw std::invalid_argument
-        ("mmapio_win32::mmapio_win32: non-ending zero parameter rejected");
+        ( "mmapio::mmapio_win32::mmapio_win32: "
+          "non-ending zero parameter rejected");
     }
     /* fix to allocation granularity */{
       DWORD psize;
@@ -629,7 +652,8 @@ namespace mmapio {
           CloseHandle(fd);
           errno = ERANGE;
           throw std::range_error
-            ("mmapio_win32::mmapio_win32: range fix failure");
+            ( "mmapio::mmapio_win32::mmapio_win32: "
+              "range fix failure");
         } else fullsize += fullshift;
         /* adjust the size */{
           size_t size_shift = (fullsize % psize);
@@ -669,7 +693,8 @@ namespace mmapio {
       /* file mapping failed */
       CloseHandle(fd);
       throw std::runtime_error
-        ("mmapio_win32::mmapio_win32: CreateFileMappingA fault");
+        ( "mmapio::mmapio_win32::mmapio_win32: "
+          "CreateFileMappingA fault");
     }
     ptr = MapViewOfFile(
         fmd, /*hFileMappingObject*/
@@ -682,7 +707,8 @@ namespace mmapio {
       CloseHandle(fmd);
       CloseHandle(fd);
       throw std::runtime_error
-        ("mmapio_win32::mmapio_win32: MapViewOfFile fault");
+        ( "mmapio::mmapio_win32::mmapio_win32: "
+          "MapViewOfFile fault");
     }
     /* initialize the interface */{
       this->ptr = static_cast<unsigned char*>(ptr);
@@ -787,7 +813,7 @@ namespace mmapio {
       char* const mbfn = wctomb(nm);
       if (mbfn == nullptr) {
         /* conversion failure, so give up */
-        throw std::runtime_error("text conversion failure");
+        throw std::runtime_error("mmapio::wopen: text conversion failure");
       }
       fd = ::open(mbfn, mode_rw_cvt(mt.mode));
       free(mbfn);
@@ -821,7 +847,8 @@ namespace mmapio {
           nullptr
         );
       if (fd == INVALID_HANDLE_VALUE) {
-        /* can't open file, so */throw std::runtime_error("can't open file");
+        /* can't open file, so */throw std::runtime_error
+            ("mmapio::open: can't open file");
       }
       return new mmapio_win32(fd, mt, sz, off);
     } catch (...) {
@@ -845,7 +872,7 @@ namespace mmapio {
       cfsa.bInheritHandle = (BOOL)(mt.bequeath ? TRUE : FALSE);
       if (wcfn == nullptr) {
         /* conversion failure, so give up */
-        throw std::runtime_error("text conversion failure");
+        throw std::runtime_error("mmapio::u8open: text conversion failure");
       }
       fd = CreateFileW(
           wcfn, mode_rw_cvt(mt.mode),
@@ -857,7 +884,8 @@ namespace mmapio {
         );
       free(wcfn);
       if (fd == INVALID_HANDLE_VALUE) {
-        /* can't open file, so */throw std::runtime_error("can't open file");
+        /* can't open file, so */throw std::runtime_error
+            ("mmapio::u8open: can't open file");
       }
       return new mmapio_win32(fd, mt, sz, off);
     } catch (...) {
@@ -887,7 +915,8 @@ namespace mmapio {
           nullptr
         );
       if (fd == INVALID_HANDLE_VALUE) {
-        /* can't open file, so */throw std::runtime_error("can't open file");
+        /* can't open file, so */throw std::runtime_error
+            ("mmapio::wopen: can't open file");
       }
       return new mmapio_win32(fd, mt, sz, off);
     } catch (...) {
@@ -900,7 +929,8 @@ namespace mmapio {
     (char const* nm, char const* mode, size_t sz, size_t off, bool throwing)
   {
     /* no-op */
-    if (throwing) throw std::runtime_error("unavailable for this system");
+    if (throwing)
+      throw std::runtime_error("mmapio::open: unavailable for this system");
     else return nullptr;
   }
 
@@ -909,7 +939,8 @@ namespace mmapio {
       bool throwing)
   {
     /* no-op */
-    if (throwing) throw std::runtime_error("unavailable for this system");
+    if (throwing)
+      throw std::runtime_error("mmapio::u8open: unavailable for this system");
     else return nullptr;
   }
 
@@ -917,10 +948,11 @@ namespace mmapio {
     (wchar_t const* nm, char const* mode, size_t sz, size_t off, bool throwing)
   {
     /* no-op */
-    if (throwing) throw std::runtime_error("unavailable for this system");
+    if (throwing)
+      throw std::runtime_error("mmapio::wopen: unavailable for this system");
     else return nullptr;
   }
-#endif /*MMAPIO_ON_UNIX*/
+#endif /*MMAPIO_PLUS_OS*/
   //END   open functions
 };
 

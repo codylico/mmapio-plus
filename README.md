@@ -14,8 +14,8 @@ Unix and Windows. The target API language is C++ 2011. In addition:
   than necessary, and should not be larger (in lines of code)
   than needed.
 
-- The library should return error values where appropriate, without
-  causing an application to abruptly terminate.
+- The library should throw exceptions where appropriate, without
+  causing an application to terminate without recourse.
 
 ## Build
 
