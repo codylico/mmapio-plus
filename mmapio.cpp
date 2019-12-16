@@ -925,7 +925,7 @@ namespace mmapio {
     }
   }
 #else
-  mmapio_i* mmapio_open
+  mmapio_i* open
     (char const* nm, char const* mode, size_t sz, size_t off, bool throwing)
   {
     /* no-op */
@@ -934,7 +934,7 @@ namespace mmapio {
     else return nullptr;
   }
 
-  mmapio_i* mmapio_u8open
+  mmapio_i* u8open
     ( unsigned char const* nm, char const* mode, size_t sz, size_t off,
       bool throwing)
   {
@@ -944,7 +944,7 @@ namespace mmapio {
     else return nullptr;
   }
 
-  mmapio_i* mmapio_wopen
+  mmapio_i* wopen
     (wchar_t const* nm, char const* mode, size_t sz, size_t off, bool throwing)
   {
     /* no-op */
