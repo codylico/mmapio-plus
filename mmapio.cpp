@@ -476,9 +476,10 @@ namespace mmapio {
     BOOL res = GetFileSizeEx(fd, &sz);
     if (res) {
 #if (defined ULLONG_MAX)
-      return (size_t)sz.QuadPart;
+      return static_cast<size_t>(sz.QuadPart);
 #else
-      return (size_t)((sz.u.LowPart)|(sz.u.HighPart<<32));
+      return static_cast<size_t>(sz.u.LowPart)
+        |    (static_cast<size_t>(sz.u.HighPart)<<32);
 #endif /*ULLONG_MAX*/
     } else return 0u;
   }
@@ -592,7 +593,7 @@ namespace mmapio {
   }
 
   void* mmapio_unix::acquire(void) {
-    return this->ptr+this->shift;
+    return static_cast<unsigned char*>(this->ptr)+this->shift;
   }
 
   void mmapio_unix::release(void* p) {
@@ -731,7 +732,7 @@ namespace mmapio {
   }
 
   void* mmapio_win32::acquire(void) {
-    return this->ptr+this->shift;
+    return static_cast<unsigned char*>(this->ptr)+this->shift;
   }
 
   void mmapio_win32::release(void* p) {
