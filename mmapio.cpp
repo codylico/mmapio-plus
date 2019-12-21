@@ -566,7 +566,10 @@ namespace mmapio {
           throw std::length_error
             ("mmapio::mmapio_unix::mmapio_unix: range fix failure");
         } else fullsize += fullshift;
-      } else fulloff = (off_t)off;
+      } else {
+        fulloff = (off_t)off;
+        fullshift = 0u;
+      }
     }
     ptr = mmap(nullptr, fullsize, mode_prot_cvt(mt.mode),
          mode_flag_cvt(mt.privy), fd, fulloff);
@@ -663,6 +666,7 @@ namespace mmapio {
           } else extended_size = fullsize;
         }
       } else {
+        fullshift = 0u;
         fulloff = off;
         extended_size = sz;
       }
