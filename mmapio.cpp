@@ -112,7 +112,7 @@ namespace mmapio {
      * \brief Check the length of the mapped area.
      * \return the length of the mapped region exposed by this interface
      */
-    size_t length(void) const override;
+    size_t length(void) const noexcept override;
   };
 
   /**
@@ -210,7 +210,7 @@ namespace mmapio {
      * \brief Check the length of the mapped area.
      * \return the length of the mapped region exposed by this interface
      */
-    size_t length(void) const override;
+    size_t length(void) const noexcept override;
   };
 
   /**
@@ -603,7 +603,7 @@ namespace mmapio {
     return;
   }
 
-  size_t mmapio_unix::length(void) const {
+  size_t mmapio_unix::length(void) const noexcept {
     return this->len-this->shift;
   }
 #elif MMAPIO_PLUS_OS == MMAPIO_OS_WIN32
@@ -743,7 +743,7 @@ namespace mmapio {
     return;
   }
 
-  size_t mmapio_win32::length(void) const {
+  size_t mmapio_win32::length(void) const noexcept {
     return this->len-this->shift;
   }
 #endif /*MMAPIO_PLUS_OS*/
@@ -752,11 +752,11 @@ namespace mmapio {
 
 namespace mmapio {
   //BEGIN configuration functions
-  int get_os(void) {
+  int get_os(void) noexcept {
     return (int)(MMAPIO_PLUS_OS);
   }
 
-  bool check_bequeath_stop(void) {
+  bool check_bequeath_stop(void) noexcept {
 #if MMAPIO_PLUS_OS == MMAPIO_OS_UNIX
 #  if (defined O_CLOEXEC)
     return true;

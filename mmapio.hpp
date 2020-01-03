@@ -96,7 +96,7 @@ namespace mmapio {
      * \brief Check the length of the mapped area.
      * \return the length of the mapped region exposed by this interface
      */
-    virtual size_t length(void) const = 0;
+    virtual size_t length(void) const noexcept = 0;
   };
 
   //BEGIN configurations
@@ -105,7 +105,7 @@ namespace mmapio {
    * \return a \link mmapio::os \endlink value
    */
   MMAPIO_PLUS_API
-  int get_os(void);
+  int get_os(void) noexcept;
 
   /**
    * \brief Check whether the library can handle possible race conditions
@@ -115,7 +115,7 @@ namespace mmapio {
    *   otherwise
    */
   MMAPIO_PLUS_API
-  bool check_bequeath_stop(void);
+  bool check_bequeath_stop(void) noexcept;
   //END   configurations
 
   //BEGIN open functions
