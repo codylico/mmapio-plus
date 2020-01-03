@@ -11,7 +11,7 @@
 
 namespace mmapio {
   /**
-   * \brief Mode tag for mmapio interface, holding various
+   * \brief Mode tag for `mmapio` interface, holding various
    *   mapping configuration values.
    */
   struct mode_tag {
@@ -26,9 +26,9 @@ namespace mmapio {
   };
 
   /**
-   * \brief Extract a mmapio mode tag from a mode text.
+   * \brief Extract a `mmapio` mode tag from a mode text.
    * \param mmode the text to parse
-   * \return a mmapio mode tag
+   * \return a `mmapio` mode tag
    */
   static struct mode_tag mode_parse(char const* mmode);
 };
@@ -64,7 +64,7 @@ namespace mmapio {
 
 namespace mmapio {
   /**
-   * \brief POSIX implementation of mmapio interface.
+   * \brief POSIX implementation of `mmapio` interface.
    */
   MMAPIO_PLUS_API
   class mmapio_unix : public mmapio_i {
@@ -123,21 +123,22 @@ namespace mmapio {
   static char* wctomb(wchar_t const* nm);
 
   /**
-   * \brief Convert a mmapio mode character to a POSIX `open` flag.
+   * \brief Convert a `mmapio` mode character to a POSIX `open` flag.
    * \param mmode the character to convert
    * \return an `open` flag on success, zero otherwise
    */
   static int mode_rw_cvt(int mmode);
 
   /**
-   * \brief Convert a mmapio mode character to a POSIX `mmap` protection flag.
+   * \brief Convert a `mmapio` mode character to a POSIX `mmap`
+   *   protection flag.
    * \param mmode the character to convert
    * \return an `mmap` protection flag on success, zero otherwise
    */
   static int mode_prot_cvt(int mmode);
 
   /**
-   * \brief Convert a mmapio mode character to a POSIX `mmap` others' flag.
+   * \brief Convert a `mmapio` mode character to a POSIX `mmap` others' flag.
    * \param mprivy the private flag to convert
    * \return an `mmap` others' flag on success, zero otherwise
    */
@@ -159,7 +160,7 @@ namespace mmapio {
 
 namespace mmapio {
   /**
-   * \brief Structure for Win32 API mmapio implementation.
+   * \brief Structure for Win32 API `mmapio` implementation.
    */
   MMAPIO_PLUS_API
   class mmapio_win32 : public mmapio_i {
@@ -214,7 +215,7 @@ namespace mmapio {
   };
 
   /**
-   * \brief Convert a mmapio mode character to a `CreateFile.`
+   * \brief Convert a `mmapio` mode character to a `CreateFile.`
    *   desired access flag.
    * \param mmode the character to convert
    * \return a `CreateFile.` desired access flag on success, zero otherwise
@@ -246,7 +247,7 @@ namespace mmapio {
   static size_t file_size_e(HANDLE fd);
 
   /**
-   * \brief Convert a mmapio mode character to a
+   * \brief Convert a `mmapio` mode character to a
    *   `CreateFileMapping.` protection flag.
    * \param mmode the character to convert
    * \return a `CreateFileMapping.` protection flag on success, zero otherwise
@@ -254,7 +255,7 @@ namespace mmapio {
   static DWORD mode_prot_cvt(int mmode);
 
   /**
-   * \brief Convert a mmapio mode character to a `MapViewOfFile`
+   * \brief Convert a `mmapio` mode character to a `MapViewOfFile`
    *   desired access flag.
    * \param mmode the character to convert
    * \return a `MapViewOfFile` desired access flag on success, zero otherwise

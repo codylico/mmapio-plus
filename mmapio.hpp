@@ -48,7 +48,7 @@ namespace mmapio {
     /**
      * \brief Map until end of file.
      * \note When this parameter is active, the open functions
-     *   \link mmapio::open \endlink, \link mmaptwo::u8open \endlink and
+     *   \link mmapio::open \endlink, \link mmapio::u8open \endlink and
      *   \link mmapio::wopen \endlink will ignore the size parameter.
      */
     mode_end = 0x65,
