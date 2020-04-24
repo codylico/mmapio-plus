@@ -72,8 +72,7 @@ namespace mmapio {
   /**
    * \brief Memory-mapped input-output interface.
    */
-  MMAPIO_PLUS_API
-  class mmapio_i {
+  class MMAPIO_PLUS_API mmapio_i {
   public:
     /**
      * \brief Destructor; closes the file and frees the space.
