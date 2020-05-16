@@ -634,13 +634,19 @@ namespace mmapio {
       if (xsz < off) {
         /* reject non-ending zero parameter */
         CloseHandle(fd);
-        throw std::invalid_argument
+        errno = ERANGE;
+        throw std::range_error
           ( "mmapio::mmapio_win32::mmapio_win32: "
             "offset too far from start of file");
       } else sz = xsz-off;
     } else if (sz == 0) {
       /* reject non-ending zero parameter */
       CloseHandle(fd);
+#if (defined EINVAL)
+      errno = EINVAL;
+#else
+      errno = EDOM;
+#endif /*EINVAL*/
       throw std::invalid_argument
         ( "mmapio::mmapio_win32::mmapio_win32: "
           "non-ending zero parameter rejected");
