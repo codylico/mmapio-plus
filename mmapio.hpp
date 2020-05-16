@@ -98,6 +98,22 @@ namespace mmapio {
     virtual size_t length(void) const noexcept = 0;
   };
 
+  //BEGIN error handling
+  /**
+   * \brief Get the `errno` value from this library.
+   * \return an error number
+   */
+  MMAPIO_PLUS_API
+  int get_errno(void) noexcept;
+
+  /**
+   * \brief Set an `errno` value to this library.
+   * \param x the value to set
+   */
+  MMAPIO_PLUS_API
+  void set_errno(int x) noexcept;
+  //END   error handling
+
   //BEGIN configurations
   /**
    * \brief Check the library's target backend.

@@ -8,6 +8,7 @@
 #include "mmapio.hpp"
 #include <cstdlib>
 #include <stdexcept>
+#include <cerrno>
 
 namespace mmapio {
   /**
@@ -59,7 +60,6 @@ namespace mmapio {
 #  include <fcntl.h>
 #  include <sys/mman.h>
 #  include <sys/stat.h>
-#  include <cerrno>
 #  include <limits>
 
 namespace mmapio {
@@ -156,7 +156,6 @@ namespace mmapio {
 #  define WIN32_LEAN_AND_MEAN
 #  include <windows.h>
 #  include <climits>
-#  include <cerrno>
 
 namespace mmapio {
   /**
@@ -752,6 +751,17 @@ namespace mmapio {
 };
 
 namespace mmapio {
+  //BEGIN error handling
+  int get_errno(void) noexcept {
+    return errno;
+  }
+
+  void set_errno(int x) noexcept {
+    errno = x;
+    return;
+  }
+  //END   error handling
+
   //BEGIN configuration functions
   int get_os(void) noexcept {
     return (int)(MMAPIO_PLUS_OS);

@@ -5,6 +5,7 @@
 #include <limits>
 #include <cctype>
 #include <iomanip>
+#include <system_error>
 
 int main(int argc, char **argv) {
   mmapio::mmapio_i* mi;
@@ -15,12 +16,16 @@ int main(int argc, char **argv) {
   }
   fname = argv[1];
   try {
+    mmapio::set_errno(0);
   mi = mmapio::open(fname, argv[2],
     (size_t)std::strtoul(argv[3],nullptr,0),
     (size_t)std::strtoul(argv[4],nullptr,0));
   } catch (std::exception const& e) {
+    int err = mmapio::get_errno();
     std::cerr << "failed to map file '" << fname << "':" << std::endl;
     std::cerr << "\t" << e.what() << std::endl;
+    std::cerr << "\t(errno = " << err << "; "
+      << std::generic_category().message(err) << ")" << std::endl;
     return EXIT_FAILURE;
   }
   /* output the data */{
