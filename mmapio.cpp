@@ -552,6 +552,12 @@ namespace mmapio {
         sz = 0 /*to fail*/;
       else sz = xsz-off;
     }
+    if (sz == 0)/* then fail */ {
+      ::close(fd);
+      errno = ERANGE;
+      throw std::range_error
+        ("mmapio::mmapio_unix::mmapio_unix: size of zero invalid");
+    }
     /* fix to page sizes */{
       long const psize = sysconf(_SC_PAGE_SIZE);
       fullsize = sz;
