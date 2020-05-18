@@ -17,9 +17,9 @@ int main(int argc, char **argv) {
   fname = argv[1];
   try {
     mmapio::set_errno(0);
-  mi = mmapio::open(fname, argv[2],
-    (size_t)std::strtoul(argv[3],nullptr,0),
-    (size_t)std::strtoul(argv[4],nullptr,0));
+    mi = mmapio::open(fname, argv[2],
+      (size_t)std::strtoul(argv[3],nullptr,0),
+      (size_t)std::strtoul(argv[4],nullptr,0));
   } catch (std::exception const& e) {
     int err = mmapio::get_errno();
     std::cerr << "failed to map file '" << fname << "':" << std::endl;
