@@ -83,13 +83,13 @@ namespace mmapio {
      * \brief Acquire a lock to the space.
      * \return pointer to locked space on success, NULL otherwise
      */
-    virtual void* acquire(void) = 0;
+    virtual void* acquire(void) noexcept = 0;
 
     /**
      * \brief Release a lock of the space.
      * \param p pointer of region to release
      */
-    virtual void release(void* p) = 0;
+    virtual void release(void* p) noexcept = 0;
 
     /**
      * \brief Check the length of the mapped area.

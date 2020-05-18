@@ -100,13 +100,13 @@ namespace mmapio {
      * \brief Acquire a lock to the space.
      * \return pointer to locked space on success, NULL otherwise
      */
-    void* acquire(void) override;
+    void* acquire(void) noexcept override;
 
     /**
      * \brief Release a lock of the space.
      * \param p pointer of region to release
      */
-    void release(void* p) override;
+    void release(void* p) noexcept override;
 
     /**
      * \brief Check the length of the mapped area.
@@ -198,13 +198,13 @@ namespace mmapio {
      * \brief Acquire a lock to the space.
      * \return pointer to locked space on success, NULL otherwise
      */
-    void* acquire(void) override;
+    void* acquire(void) noexcept override;
 
     /**
      * \brief Release a lock of the space.
      * \param p pointer of region to release
      */
-    void release(void* p) override;
+    void release(void* p) noexcept override;
 
     /**
      * \brief Check the length of the mapped area.
@@ -601,11 +601,11 @@ namespace mmapio {
     return;
   }
 
-  void* mmapio_unix::acquire(void) {
+  void* mmapio_unix::acquire(void) noexcept {
     return static_cast<unsigned char*>(this->ptr)+this->shift;
   }
 
-  void mmapio_unix::release(void* p) {
+  void mmapio_unix::release(void* p) noexcept {
     return;
   }
 
@@ -747,11 +747,11 @@ namespace mmapio {
     return;
   }
 
-  void* mmapio_win32::acquire(void) {
+  void* mmapio_win32::acquire(void) noexcept {
     return static_cast<unsigned char*>(this->ptr)+this->shift;
   }
 
-  void mmapio_win32::release(void* p) {
+  void mmapio_win32::release(void* p) noexcept {
     return;
   }
 
