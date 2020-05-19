@@ -579,7 +579,7 @@ namespace mmapio {
     }
     ptr = ::mmap(nullptr, fullsize, mode_prot_cvt(mt.mode),
          mode_flag_cvt(mt.privy), fd, fulloff);
-    if (!ptr) {
+    if (ptr == MAP_FAILED) {
       close(fd);
       throw std::runtime_error
         ("mmapio::mmapio_unix::mmapio_unix: mmap failure");
