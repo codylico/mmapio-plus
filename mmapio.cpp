@@ -577,7 +577,7 @@ namespace mmapio {
         fullshift = 0u;
       }
     }
-    ptr = mmap(nullptr, fullsize, mode_prot_cvt(mt.mode),
+    ptr = ::mmap(nullptr, fullsize, mode_prot_cvt(mt.mode),
          mode_flag_cvt(mt.privy), fd, fulloff);
     if (!ptr) {
       close(fd);
